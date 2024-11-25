@@ -1,13 +1,47 @@
 from flask import Flask, request, jsonify
 import os
+from .firebase_config import initialize_firebase
+from firebase_admin import auth
+from functools import wraps
+
+initialize_firebase()
 
 app = Flask(__name__)
+
+def verify_firebase_token(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        auth_header = request.headers.get('Authorization')
+        
+        if not auth_header:
+            return jsonify({"error": "No token provided"}), 401
+            
+        try:
+            token = auth_header.split(' ')[1]  # Remove 'Bearer '
+            decoded_token = auth.verify_id_token(token)
+            request.user = decoded_token
+            return f(*args, **kwargs)
+        except Exception as e:
+            return jsonify({"error": "Invalid token"}), 401
+            
+    return decorated_function
+
 
 @app.route('/', methods=['GET'])
 def health_check():
     return jsonify({
         "status": "healthy",
         "message": "API is running"
+    })
+
+
+@app.route('/auth-test', methods=['GET'])
+@verify_firebase_token
+def auth_test():
+    return jsonify({
+        "status": "success",
+        "message": "Authenticated successfully",
+        "user_id": request.user['uid']
     })
 
 @app.route('/predict', methods=['POST'])
