@@ -71,4 +71,9 @@ ehthumbs.db
 Thumbs.db
 
 # Allow example files
-!.env.example
+!.env.exampledeploy.sh
+
+# Deployment scripts
+deploy.sh
+
+firebase_config.py
