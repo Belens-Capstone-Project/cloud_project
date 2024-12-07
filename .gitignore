@@ -47,6 +47,10 @@ serviceAccount*.json
 **/serviceAccount*.json
 google-services.json
 **/google-services.json
+
+bucket_credentials/
+*.json
+gcsServiceAccountKey*.json
 *.pem
 *.key
 *.crt
@@ -77,3 +81,25 @@ Thumbs.db
 deploy.sh
 
 firebase_config.py
+firebase_config
+policy.yaml
+credentials/
+*.json
+
+appholder.txt
+
+# Bucket credentials
+bucket_credentials/
+bucketCredentials/
+*.keras
+
+# Nutrition and sensitive CSVs
+nutrisi.csv
+Minuman.csv
+
+# Model files
+best_model*.keras
+best_model_optimized.tflite
+
+# Local environment files
+credentials/

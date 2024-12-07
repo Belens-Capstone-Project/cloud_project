@@ -21,4 +21,4 @@ ENV PORT=8080
 EXPOSE 8080
 
 # Start the application with gunicorn (updated to JSON array syntax)
-CMD ["gunicorn", "--bind", ":8080", "api.app:app", "--workers", "1", "--threads", "8", "--timeout", "0"]
+CMD ["gunicorn", "--bind", ":8080", "app:app", "--workers", "1", "--threads", "8", "--timeout", "0"]
