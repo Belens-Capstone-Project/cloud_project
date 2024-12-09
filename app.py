@@ -17,6 +17,7 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from google.cloud import storage
 import tensorflow as tf
+import requests
 
 # Enhanced Logging Configuration
 logging.basicConfig(
@@ -34,6 +35,7 @@ db = firestore.client()
 # Flask App Setup
 app = Flask(__name__)
 CORS(app)
+
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
@@ -130,72 +132,6 @@ def health_check():
         "timestamp": datetime.now().isoformat()
     }), 200
 
-@app.route('/history', methods=['GET'])
-def get_user_history():
-    try:
-        # Check if email is provided
-        user_email = request.args.get('email')
-        if not user_email:
-            logger.error('Email is required')
-            return jsonify({
-                'error': 'Email required', 
-                'details': 'User email must be provided'
-            }), 400
-
-        try:
-            # Verify user authentication
-            user = auth.get_user_by_email(user_email)  
-            user_id = user.uid  
-        except auth.UserNotFoundError:
-            logger.error(f'User not found: {user_email}')
-            return jsonify({
-                'error': 'User not found', 
-                'details': 'No user found with the provided email'
-            }), 404
-        except Exception as auth_error:
-            logger.error(f'Authentication error: {auth_error}')
-            return jsonify({
-                'error': 'Authentication error', 
-                'details': str(auth_error)
-            }), 500
-
-        # Query history based on user_id
-        try:
-            predictions_ref = db.collection('predictions')
-            query = predictions_ref.where('user_id', '==', user_id).order_by('timestamp', direction=firestore.Query.DESCENDING)
-            
-            # Retrieve documents
-            docs = query.stream()
-            
-            # Convert query results to list
-            history = []
-            for doc in docs:
-                doc_data = doc.to_dict()
-                doc_data['doc_id'] = doc.id
-                history.append(doc_data)
-        except Exception as query_error:
-            logger.error(f'History query error: {query_error}')
-            return jsonify({
-                'error': 'History retrieval failed', 
-                'details': str(query_error)
-            }), 500
-
-        # Successful response
-        return jsonify({
-            "status": "success",
-            "history": history,
-            "count": len(history)
-        })
-
-    except Exception as unexpected_error:
-        # Catch any unexpected errors
-        logger.error(f'Unexpected error in history endpoint: {unexpected_error}')
-        logger.error(traceback.format_exc())  # Log full stack trace
-        return jsonify({
-            'error': 'Unexpected server error', 
-            'details': str(unexpected_error)
-        }), 500
-
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
@@ -217,32 +153,7 @@ def predict():
                 'details': 'Uploaded file has an empty filename'
             }), 400
 
-        # Check email
-        user_email = request.form.get('email')
-        if not user_email:
-            logger.error('Email is required')
-            return jsonify({
-                'error': 'Email required', 
-                'details': 'User email must be provided'
-            }), 400
-
-        try:
-            # Verify user authentication
-            user = auth.get_user_by_email(user_email)  
-            user_id = user.uid  
-        except auth.UserNotFoundError:
-            logger.error(f'User not found: {user_email}')
-            return jsonify({
-                'error': 'User not found', 
-                'details': 'No user found with the provided email'
-            }), 404
-        except Exception as auth_error:
-            logger.error(f'Authentication error: {auth_error}')
-            return jsonify({
-                'error': 'Authentication error', 
-                'details': str(auth_error)
-            }), 500
-
+     
         # Try to load the model
         try:
             model = get_model()
@@ -310,8 +221,6 @@ def predict():
         # Save prediction to Firestore
         try:
             prediction_data = {
-                "user_id": user_id,
-                "user_email": user_email,
                 "prediction": predicted_label,
                 "confidence": float(np.max(prediction) * 100),
                 "file_url": file_url,
@@ -354,6 +263,51 @@ def test_firestore():
     except Exception as e:
         logger.error(f"Error testing Firestore: {e}")
         return jsonify({"status": "error", "message": str(e)})
+
+@app.route('/news', methods=['GET'])
+def get_news():
+    # Check if API key is available
+    news_api_key = os.getenv('news-api-key')
+    if not news_api_key:
+        logger.error('News API Key is not set')
+        return jsonify({
+            'error': 'News API configuration error', 
+            'details': 'API Key is missing'
+        }), 500
+
+    try:
+        url = f"https://newsapi.org/v2/everything?q=health+diet&domains=healthline.com,webmd.com,detik.com,bbc.com,medicalnewstoday.com&apiKey={news_api_key}&pageSize=100"
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            news_data = response.json()
+            articles = news_data.get('articles', [])
+
+            articles = sorted(articles, key=lambda x: datetime.strptime(x['publishedAt'], '%Y-%m-%dT%H:%M:%SZ'), reverse=True)
+            filtered_articles = [
+                {
+                    'title': article['title'],
+                    'description': article['description'],
+                    'url': article['url'],
+                    'imageUrl': article.get('urlToImage')
+                }
+                for article in articles
+            ]
+            return jsonify(filtered_articles)
+        else:
+            logger.error(f'News API request failed: {response.status_code}')
+            return jsonify({
+                'error': 'Failed to fetch news', 
+                'details': response.text
+            }), response.status_code
+
+    except Exception as e:
+        logger.error(f'Unexpected error in news endpoint: {e}')
+        return jsonify({
+            'error': 'Unexpected server error', 
+            'details': str(e)
+        }), 500
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
