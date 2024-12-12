@@ -1,5 +1,5 @@
 # Cloud Computing Team
-![images](https://github.com/user-attachments/assets/e38beb5e-9b2a-4c1e-b583-e9f2926a9817)
+![description](https://github.com/user-attachments/assets/e38beb5e-9b2a-4c1e-b583-e9f2926a9817)
 
 
 ## Project Overview
