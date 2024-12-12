@@ -1,5 +1,5 @@
 # Cloud Computing Team
-<img src="![unnamed](https://github.com/user-attachments/assets/8a551365-3dd8-4637-a582-c4e9541c9da0)
+<img src="https://github.com/user-attachments/assets/8a551365-3dd8-4637-a582-c4e9541c9da0
 " alt="Description" style="display: block; margin: 0 auto;" width="300">
 
 
