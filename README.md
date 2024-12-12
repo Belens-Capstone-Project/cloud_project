@@ -1,7 +1,6 @@
 # Cloud Computing Team
-<center>
-  <img src="[image-url.png](https://github.com/user-attachments/assets/28530d72-ef26-40a3-a6ed-9ae23234910c)" alt="Description" width="300">
-</center>
+![description](https://github.com/user-attachments/assets/da0be0a3-08b9-4197-8825-ae1120eef44e)
+
 
 ## Project Overview
 This project aims to develop a scalable and secure API for a sugar monitoring application. The API provides functionalities for image prediction, nutritional data retrieval, and metadata storage. The application is built using a serverless architecture on Google Cloud Platform.
