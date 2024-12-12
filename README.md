@@ -1,5 +1,6 @@
 # Cloud Computing Team
-![description](https://github.com/user-attachments/assets/da0be0a3-08b9-4197-8825-ae1120eef44e)
+<img src="![unnamed](https://github.com/user-attachments/assets/8a551365-3dd8-4637-a582-c4e9541c9da0)
+" alt="Description" style="display: block; margin: 0 auto;" width="300">
 
 
 ## Project Overview
