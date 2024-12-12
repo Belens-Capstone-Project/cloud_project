@@ -1,6 +1,16 @@
 # Cloud Computing Team
 ![belensapp drawio](https://github.com/user-attachments/assets/fa222c7a-0757-41d5-bbc7-5fd37a82450a)
 
+## Project Overview
+This project aims to develop a scalable and secure API for a sugar monitoring application. The API provides functionalities for image prediction, nutritional data retrieval, and metadata storage. The application is built using a serverless architecture on Google Cloud Platform.
+
+## Key Features
+- Containerized Flask application for API deployment
+- Integration with Google Cloud Storage and Firebase Firestore
+- Scalable and secure execution environment powered by Google Cloud Run
+- Robust error handling and logging for improved observability
+- Rate limiting and middleware for enhanced security
+
 ## Steps to Develop the API
 
 1. **Set Up Dependencies**
