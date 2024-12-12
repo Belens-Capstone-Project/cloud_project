@@ -1,4 +1,5 @@
 # Cloud Computing Team
+![belensapp drawio](https://github.com/user-attachments/assets/fa222c7a-0757-41d5-bbc7-5fd37a82450a)
 
 ## Steps to Develop the API
 
