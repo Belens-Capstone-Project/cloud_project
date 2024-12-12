@@ -1,5 +1,5 @@
 # Cloud Computing Team
-![belensapp drawio](https://github.com/user-attachments/assets/fa222c7a-0757-41d5-bbc7-5fd37a82450a)
+![Tanpa Judul](https://github.com/user-attachments/assets/28530d72-ef26-40a3-a6ed-9ae23234910c)
 
 ## Project Overview
 This project aims to develop a scalable and secure API for a sugar monitoring application. The API provides functionalities for image prediction, nutritional data retrieval, and metadata storage. The application is built using a serverless architecture on Google Cloud Platform.
@@ -69,6 +69,9 @@ This project aims to develop a scalable and secure API for a sugar monitoring ap
 3. **Set Up Firebase and Cloud Storage**
    - Initialize Firebase for Firestore and authentication.
    - Configure a Google Cloud Storage bucket for file uploads.
+
+## Arsitechture Backend
+![belensapp drawio](https://github.com/user-attachments/assets/fa222c7a-0757-41d5-bbc7-5fd37a82450a)
 
 ## Contact Us
 
